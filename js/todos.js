@@ -5,7 +5,7 @@ const todoList = document.getElementById("todo-list");
 const todoArray = [];
 
 function saveTodos() {
-  localStorage.setItem("todos", todoArray);
+  localStorage.setItem("todos", JSON.stringify(todoArray)); // localStorage에 저장된 값을 불러와서 setting하기 위해 배열모양의 string으로 저장하기 위한 방법
 }
 
 function deleteTodo(event) {
