@@ -13,19 +13,23 @@ function saveTodos() {
 function deleteTodo(event) {
   const list = event.target.parentElement;
   list.remove();
+  todoArray = todoArray.filter((item) => item.id !== parseInt(list.id)); // 삭제버튼을 클릭한 li를 제외한 li들을 필터링
+  saveTodos();
 }
 
 function paintTodo(newTodo) {
   const li = document.createElement("li");
+  li.id = newTodo.id; // object형의 newTodo의 id를 li의 id로
   const span = document.createElement("span");
-  li.appendChild(span);
-  const button = document.createElement("button");
+  span.innerText = newTodo.text;
 
-  li.appendChild(button);
-  span.innerText = newTodo;
+  const button = document.createElement("button");
   button.innerText = "❌";
-  todoList.appendChild(li);
   button.addEventListener("click", deleteTodo);
+
+  li.appendChild(span);
+  li.appendChild(button);
+  todoList.appendChild(li);
 }
 
 function handleTodoForm(event) {
@@ -33,8 +37,13 @@ function handleTodoForm(event) {
 
   const newTodo = todoInput.value;
   todoInput.value = "";
-  todoArray.push(newTodo);
-  paintTodo(newTodo);
+
+  const newTodoObj = {
+    id: Date.now(),
+    text: newTodo,
+  };
+  todoArray.push(newTodoObj);
+  paintTodo(newTodoObj);
   saveTodos();
 }
 
@@ -45,5 +54,5 @@ const savedTodos = localStorage.getItem(TODO_KEY);
 if (savedTodos) {
   const parseTodos = JSON.parse(savedTodos);
   todoArray = parseTodos; // localStorage에 값이 있을 경우에는 최초 빈 배열인 todoArray에 push를 해서 초기화를 시키지 않도록 parseTodos를 대입시켜줌
-  parseTodos.forEach((item) => paintTodo(item));
+  parseTodos.forEach(paintTodo);
 }
